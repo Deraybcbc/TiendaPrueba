@@ -10,6 +10,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -55,8 +58,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void VerificarUsuari() {
 
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        httpClient.connectTimeout(60, TimeUnit.SECONDS);
+        httpClient.readTimeout(60, TimeUnit.SECONDS);
+        httpClient.writeTimeout(60, TimeUnit.SECONDS);
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(URL)
+                .client(httpClient.build())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -64,27 +73,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         UsuariTrobat datosLogin = new UsuariTrobat(Usuario,Contrasenya);
 
-        Call<UsuariTrobat> call = apiService.EnviarUsuari(datosLogin);
+        Call<Respuesta> call = apiService.EnviarUsuari(datosLogin);
 
-        call.enqueue(new Callback<UsuariTrobat>() {
+        call.enqueue(new Callback<Respuesta>() {
             @Override
-            public void onResponse(Call<UsuariTrobat> call, Response<UsuariTrobat> response) {
+            public void onResponse(Call<Respuesta> call, Response<Respuesta> response) {
                 if(response.isSuccessful()){
                     Log.d("Conexion","CONEXION SERVIDOR ESTABLECIDA");
 
-                    Intent intent = new Intent(MainActivity.this,Botiga.class);
-                    intent.putExtra("user",Usuario);
-                    startActivity(intent);
+                    Respuesta r = response.body();
 
-                }
-                else{
-                    Log.d("Conexion","CONEXION SERVIDOR ERROR");
-
+                    if (r.isAutoritzacio()){
+                        Log.d("User","entro");
+                        Intent intent = new Intent(MainActivity.this,Botiga.class);
+                        intent.putExtra("user",Usuario);
+                        intent.putExtra("contra",Contrasenya);
+                        startActivity(intent);
+                    }else{
+                        Log.e("USER","NO ESTA");
+                        Toast.makeText(MainActivity.this, "No esta en la base de datos", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
             @Override
-            public void onFailure(Call<UsuariTrobat> call, Throwable t) {
+            public void onFailure(Call<Respuesta> call, Throwable t) {
                 Log.d("Error",t.getMessage());
             }
         });
