@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.service.controls.actions.FloatAction;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -89,8 +88,19 @@ public class DadesUsuari extends AppCompatActivity implements View.OnClickListen
             }
         });
 
-        FloatingActionButton boton = (FloatingActionButton) findViewById(R.id.volver);
+        FloatingActionButton boton = (FloatingActionButton) findViewById(R.id.volverAtras);
         boton.setOnClickListener(this);
+
+
+        FloatingActionButton boton2 = (FloatingActionButton) findViewById(R.id.cerrarsession);
+        boton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent cerrar = new Intent(DadesUsuari.this,MainActivity.class);
+                startActivity(cerrar);
+            }
+        });
+
     }
 
     @Override

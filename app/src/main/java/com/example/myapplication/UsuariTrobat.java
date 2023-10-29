@@ -16,7 +16,7 @@ public class UsuariTrobat {
     private String cognoms;
 
 
-    @SerializedName("contra")
+    @SerializedName("passwd")
     private String passwd;
 
     @SerializedName("nTargeta")
