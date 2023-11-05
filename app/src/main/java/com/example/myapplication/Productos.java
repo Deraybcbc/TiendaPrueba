@@ -1,50 +1,96 @@
 package com.example.myapplication;
 
-public class Productos {
-    private String titulo;
-    private String Descripcion;
-    private String precio;
-    private int Imagenpro;
+import com.google.gson.annotations.JsonAdapter;
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+
+public class Productos implements Serializable {
+    @SerializedName("id")
+    private int id_producte;
+
+    @SerializedName("nom")
+    private String nom;
+
+    @SerializedName("descripcio")
+    private String descripcio;
+
+    @SerializedName("preu")
+    private float preu;
+
+    @SerializedName("estat")
+    @JsonAdapter(ConvertirBoolean.class)
+    private boolean estat;
+
+    @SerializedName("foto")
+    private String foto;
+
+    @SerializedName("cantidad")
+    private int contador;
 
     public Productos() {
     }
 
-    public Productos(String titulo, String descripcion, String precio, int imagenpro) {
-        this.titulo = titulo;
-        this.Descripcion = descripcion;
-        this.precio = precio;
-        this.Imagenpro = imagenpro;
+    public Productos(int id_producte, int contador) {
+        this.id_producte = id_producte;
+        this.contador = contador;
     }
 
-    public String getTitulo() {
-        return titulo;
+    public int getId_producte() {
+        return id_producte;
     }
 
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
+    public void setId_producte(int id_producte) {
+        this.id_producte = id_producte;
     }
 
-    public String getDescripcion() {
-        return Descripcion;
+    public String getNom() {
+        return nom;
     }
 
-    public void setDescripcion(String descripcion) {
-        Descripcion = descripcion;
+    public void setNom(String nom) {
+        this.nom = nom;
     }
 
-    public String getPrecio() {
-        return precio;
+    public String getDescripcio() {
+        return descripcio;
     }
 
-    public void setPrecio(String precio) {
-        this.precio = precio;
+    public void setDescripcio(String descripcio) {
+        this.descripcio = descripcio;
     }
 
-    public int getImagenpro() {
-        return Imagenpro;
+    public float getPreu() {
+        return preu;
     }
 
-    public void setImagenpro(int imagenpro) {
-        Imagenpro = imagenpro;
+    public void setPreu(float preu) {
+        this.preu = preu;
     }
+
+    public boolean isEstat() {
+        return estat;
+    }
+
+    public void setEstat(boolean estat) {
+        this.estat = estat;
+    }
+
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
+    }
+
+    public int getContador() {
+        return contador;
+    }
+
+    public void setContador(int contador) {
+        this.contador = contador;
+    }
+
+
 }

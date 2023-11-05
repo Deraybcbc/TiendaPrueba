@@ -3,15 +3,13 @@ package com.example.myapplication;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.google.android.material.snackbar.Snackbar;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -24,8 +22,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.databinding.ActivityBotigaBinding;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Botiga extends AppCompatActivity  {
 
@@ -33,9 +38,15 @@ public class Botiga extends AppCompatActivity  {
     private ActivityBotigaBinding binding;
 
     private RecyclerView recyclerViewProductos;
-    private RecyclerViewAdaptador adaptadorProductos;
+    private RecyclerViewAdaptadorProductos adaptadorProductos;
+    public static ApiService apiService;
+
+    private ImageView car;
 
     public String usuari;
+
+    private static final String URL = "http://192.168.1.35:3001/";
+    //private static final String URL = "http://192.168.205.213:3001/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,12 +60,62 @@ public class Botiga extends AppCompatActivity  {
         //MENU
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        //Para mostrar los Productos con el RecyclerView
-        recyclerViewProductos=(RecyclerView)findViewById(R.id.Productos);
-        recyclerViewProductos.setLayoutManager(new LinearLayoutManager(this));
-        adaptadorProductos=new RecyclerViewAdaptador(obtenerProductos());
-        recyclerViewProductos.setAdapter(adaptadorProductos);
 
+        Retrofit retrofit =  new Retrofit.Builder()
+                .baseUrl(URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        apiService = retrofit.create(ApiService.class);
+
+        Call<List<Productos>> call = apiService.ObtenerProductos();
+
+        call.enqueue(new Callback<List<Productos>>() {
+            @Override
+            public void onResponse(Call<List<Productos>> call, Response<List<Productos>> response) {
+                if(response.isSuccessful()){
+
+                    Log.d("CONEXION","CONEXION SERVIDOR EXITOSA");
+
+                    List<Productos> listaproductos = response.body();
+
+                    Log.d("ListaProductos","Lista:"+listaproductos);
+
+                    //Para mostrar los Productos con el RecyclerView
+
+                    recyclerViewProductos=(RecyclerView)findViewById(R.id.Productos);
+                    recyclerViewProductos.setLayoutManager(new LinearLayoutManager(Botiga.this));
+                    adaptadorProductos=new RecyclerViewAdaptadorProductos(listaproductos);
+                    recyclerViewProductos.setAdapter(adaptadorProductos);
+
+                    //Pillar los datos que hemos seleccionado
+                    adaptadorProductos.setOnItemClickListener(new RecyclerViewAdaptadorProductos.OnItemClickListener() {
+
+                        @Override
+                        public void onItemClick(List<Productos> listaProductos) {
+                            car = (ImageView) findViewById(R.id.Imgcar);
+                            car.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(Botiga.this,carrito.class);
+                                    intent.putExtra("USER",usuari);
+                                    startActivity(intent);
+                                }
+                            });
+                        }
+                    });
+                    adaptadorProductos.notifyDataSetChanged();
+                }
+
+
+
+            }
+
+            @Override
+            public void onFailure(Call<List<Productos>> call, Throwable t) {
+                Log.d("ERROR",t.getMessage());
+            }
+        });
 
 
         usuari = getIntent().getStringExtra("user");
@@ -64,14 +125,8 @@ public class Botiga extends AppCompatActivity  {
         }else{
             Toast.makeText(this, "Bienvenido "+usuari, Toast.LENGTH_SHORT).show();
         }
-    }
 
-    public List<Productos> obtenerProductos(){
-        List<Productos> pro = new ArrayList<>();
 
-        pro.add(new Productos("Coca-Cola","Tamany Gran","19,20 €",R.drawable.cocacola));
-
-        return pro;
     }
 
     @Override
@@ -91,7 +146,6 @@ public class Botiga extends AppCompatActivity  {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
         //Mostrar y enviar a donde queremos ir
         switch (id) {
             case R.id.dades:

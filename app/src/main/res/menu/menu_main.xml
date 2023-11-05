@@ -6,8 +6,9 @@
         android:title="@string/Dades"
         android:icon="@drawable/user2"/>
 
-    <item android:id="@+id/cerrar"
-        android:title="@string/Tancar"
-        android:icon="@drawable/tancar"/>
+    <item
+        android:id="@+id/cerrar"
+        android:icon="@drawable/tancar"
+        android:title="@string/Tancar" />
 
 </menu>

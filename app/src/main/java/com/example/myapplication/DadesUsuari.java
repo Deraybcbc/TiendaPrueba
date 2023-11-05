@@ -21,7 +21,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DadesUsuari extends AppCompatActivity implements View.OnClickListener {
 
-    private static String URL="http://192.168.1.35:3001/";
+    //private static String URL="http://192.168.1.35:3001/";
+    private static String URL="http://192.168.205.213:3001/";
     public ApiService apiService;
     private ArrayList<TextView> textos;
 
@@ -41,9 +42,7 @@ public class DadesUsuari extends AppCompatActivity implements View.OnClickListen
 
         System.out.println(user);
 
-        UsuariTrobat usuariTrobat = new UsuariTrobat(user);
-
-        Call<List<UsuariTrobat>> call = apiService.ObtenerUsers(usuariTrobat);
+        Call<List<UsuariTrobat>> call = apiService.ObtenerUsers();
 
         call.enqueue(new Callback<List<UsuariTrobat>>() {
             @Override

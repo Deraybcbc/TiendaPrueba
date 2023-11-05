@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String Contrasenya;
 
     private static final String URL = "http://192.168.1.35:3001/";
+    //private static final String URL = "http://192.168.205.213:3001/";
 
     public static ApiService apiService;
     private EditText User;
@@ -58,14 +59,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void VerificarUsuari() {
 
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        httpClient.connectTimeout(60, TimeUnit.SECONDS);
-        httpClient.readTimeout(60, TimeUnit.SECONDS);
-        httpClient.writeTimeout(60, TimeUnit.SECONDS);
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(URL)
-                .client(httpClient.build())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

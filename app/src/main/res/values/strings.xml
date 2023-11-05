@@ -8,7 +8,12 @@
     <string name="Dades">Dades Usuari</string>
     <string name="Tancar">Tancar sessió</string>
 
-    <string name="title_activity_botiga">Botiga</string>
+    <string name="title_activity_botiga">Proyecto Tienda</string>
+    <string name="Finalizar">Finalitzar compra</string>
+    <string name="PrecioTotal">Preu total</string>
+    <string name="Hora">Hora</string>
+    <string name="Fecha">Data</string>
+
 
 
     <!-- Strings used for fragments for dades -->
@@ -32,7 +37,11 @@
     <string name="productos">Productos</string>
     <string name="Descripcion">Descripcion</string>
     <string name="Precio">€</string>
-    <string name="Cantidad">Nº</string>
+    <string name="Cantidad">0</string>
+    <string name="productes">Productes</string>
+    <string name="Carrito">Carret</string>
+    <string name="Compra">Comprar</string>
+    <string name="Pagar">Pagar</string>
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
