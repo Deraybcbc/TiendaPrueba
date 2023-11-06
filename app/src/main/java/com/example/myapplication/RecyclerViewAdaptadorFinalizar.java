@@ -20,6 +20,7 @@ public class RecyclerViewAdaptadorFinalizar extends RecyclerView.Adapter<Recycle
     private List<Productos> productosEnCarrito;
     private OnItemClickListener onItemClickListener;
 
+
     @Override
     public RecyclerViewAdaptadorFinalizar.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.lista_finalizar,parent,false);

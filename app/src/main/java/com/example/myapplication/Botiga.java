@@ -78,6 +78,10 @@ public class Botiga extends AppCompatActivity  {
                     Log.d("CONEXION","CONEXION SERVIDOR EXITOSA");
 
                     List<Productos> listaproductos = response.body();
+                    for(int i = 0; i < listaproductos.size();i++){
+                        System.out.println("BORITGA: " +listaproductos.get(i).getId_producte());
+
+                    }
 
                     Log.d("ListaProductos","Lista:"+listaproductos);
 
@@ -129,6 +133,7 @@ public class Botiga extends AppCompatActivity  {
 
     }
 
+    //ACCION DE FLECHA
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_botiga);
@@ -158,6 +163,10 @@ public class Botiga extends AppCompatActivity  {
                 // Acción para la "Opción 1"
                 Intent intent2 = new Intent(this, MainActivity.class);
                 startActivity(intent2);
+                return true;
+            case R.id.comandas:
+                Intent intent3 = new Intent(this,comandas.class);
+                startActivity(intent3);
                 return true;
         }
 

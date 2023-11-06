@@ -2,13 +2,21 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/dades"
+    <item
+        android:id="@+id/dades"
+        android:icon="@drawable/user2"
         android:title="@string/Dades"
-        android:icon="@drawable/user2"/>
+        app:showAsAction="always" />
 
+    <item
+        android:id="@+id/comandas"
+        android:icon="@drawable/_0339382"
+        android:title="Comandas"
+        app:showAsAction="always" />
     <item
         android:id="@+id/cerrar"
         android:icon="@drawable/tancar"
-        android:title="@string/Tancar" />
+        android:title="@string/Tancar"
+        app:showAsAction="always" />
 
 </menu>

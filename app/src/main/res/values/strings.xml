@@ -13,7 +13,7 @@
     <string name="PrecioTotal">Preu total</string>
     <string name="Hora">Hora</string>
     <string name="Fecha">Data</string>
-
+    <string name="Comandas">Comandas</string>
 
 
     <!-- Strings used for fragments for dades -->

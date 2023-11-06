@@ -4,12 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,10 +23,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class finalizarcompra extends AppCompatActivity implements View.OnClickListener {
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+public class finalizarcompra extends AppCompatActivity {
 
     private static final String URL = "http://192.168.1.35:3001/";
     //private static final String URL = "http://192.168.205.213:3001/";
@@ -38,11 +47,19 @@ public class finalizarcompra extends AppCompatActivity implements View.OnClickLi
     private TextView textoHora;
 
     private RecyclerView recyclerViewFinalizar;
+
     private RecyclerViewAdaptadorFinalizar adaptadorFinalizar;
+
 
     private List<Productos> selectedProductos;
 
+    private double preuTotal=0.0;
 
+    private String selectedDate;
+    private String Hora;
+
+
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,10 +71,6 @@ public class finalizarcompra extends AppCompatActivity implements View.OnClickLi
         //BUSCAR IDS
         textoFecha = (TextView) findViewById(R.id.FData);
         textoHora = (TextView)findViewById(R.id.Fhora);
-
-        //VOLVER CARRITO
-        atrasCarrito = (ImageView) findViewById(R.id.atrascarrito);
-        atrasCarrito.setOnClickListener(this);
 
         //ALERTA DE COMANDA
         Button pagar = (Button) findViewById(R.id.pagar);
@@ -73,10 +86,57 @@ public class finalizarcompra extends AppCompatActivity implements View.OnClickLi
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //Hacer el retrofit
-                        Toast.makeText(finalizarcompra.this, "Comando creada", Toast.LENGTH_SHORT).show();
 
-                        Intent intent = new Intent(finalizarcompra.this,Botiga.class);
-                        startActivity(intent);
+                        Retrofit retrofit =  new Retrofit.Builder()
+                                .baseUrl(URL)
+                                .addConverterFactory(GsonConverterFactory.create())
+                                .build();
+
+                        apiService = retrofit.create(ApiService.class);
+
+                        List<Productos> selectedProducts = ProductoSelecionado.getInstance().getSelectedProductos();
+                        List<ProductosEnviar> listaProductos = new ArrayList<>();
+
+                        for (Productos productos: selectedProducts){
+                            int id = productos.getId_producte();
+                            int cantidad = productos.getContador();
+
+                            ProductosEnviar productosEnviar = new ProductosEnviar(id,cantidad,Hora,selectedDate);
+                            listaProductos.add(productosEnviar);
+                        }
+
+                        Call<Respuesta> call = apiService.EnviarComando(listaProductos);
+
+                        call.enqueue(new Callback<Respuesta>() {
+                            @Override
+                            public void onResponse(Call<Respuesta> call, Response<Respuesta> response) {
+                                if(response.isSuccessful()){
+                                    Log.d("CONEXION","CONECTADO CON EL SERVIDOR");
+
+
+                                    Respuesta r = response.body();
+
+                                    if(r.isAutoritzacio()){
+                                        Log.d("COMANDA","COMANDO HECHA");
+                                        Toast.makeText(finalizarcompra.this, "Comando creada", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(finalizarcompra.this,Botiga.class);
+                                        startActivity(intent);
+                                        ProductoSelecionado.getInstance().clearSelectedProductos();
+                                    }
+
+                                    else{
+                                        Log.d("COMANDO","FALLO AL HACER LA COMANDA");
+                                    }
+
+
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Respuesta> call, Throwable t) {
+                                Log.e("ERROR",t.getMessage());
+                            }
+                        });
                     }
                 });
 
@@ -104,7 +164,18 @@ public class finalizarcompra extends AppCompatActivity implements View.OnClickLi
             }
         });
 
-        //RecyclerView
+        ImageButton BHora = (ImageButton) findViewById(R.id.BHora);
+        BHora.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ObtenerHora();
+            }
+        });
+
+        CalcularPrecio();
+        //ObtenerNumeroTarjeta();
+
+        //RecyclerView Productos Seleccionados
         recyclerViewFinalizar = (RecyclerView) findViewById(R.id.PagarProductos);
         recyclerViewFinalizar.setLayoutManager(new LinearLayoutManager(this));
 
@@ -138,16 +209,22 @@ public class finalizarcompra extends AppCompatActivity implements View.OnClickLi
                 Intent intent2 = new Intent(this, MainActivity.class);
                 startActivity(intent2);
                 return true;
+            case R.id.comandas:
+                Intent intent3 = new Intent(this,comandas.class);
+                startActivity(intent3);
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void onClick(View v) {
+    public boolean onSupportNavigateUp() {
         Intent intent =  new Intent(this,carrito.class);
         startActivity(intent);
+        return true;
     }
+
 
     private void ObtenerFecha() {
         /*
@@ -178,26 +255,54 @@ public class finalizarcompra extends AppCompatActivity implements View.OnClickLi
                 }
 
                 // Procesa la fecha seleccionada aquí y actualiza el contenido del EditText
-                String selectedDate = selectedDayStr + "/" + selectedMonthStr + "/" + selectedYear;
+                selectedDate = selectedDayStr + "/" + selectedMonthStr + "/" + selectedYear;
                 textoFecha.setText(selectedDate);
             }
         }, day, month, year);
 
         datePickerDialog.show();
     }
-/*
+
     private void ObtenerHora(){
         Calendar calendar = Calendar.getInstance();
         int hora = calendar.get(Calendar.HOUR_OF_DAY);
         int minutos = calendar.get(Calendar.MINUTE);
 
-        TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+        TimePickerDialog timePickerDialog = new TimePickerDialog(finalizarcompra.this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                String hora = hourOfDay+":"+minute;
-                textoHora.setText(hora);
+                Hora = hourOfDay+":"+minute;
+                textoHora.setText(Hora);
             }
-        },hora,minutos);
+        },hora,minutos,true);
         timePickerDialog.show();
+    }
+
+    private void CalcularPrecio(){
+        List<Productos> ProductosSellecionados = ProductoSelecionado.getInstance().getSelectedProductos();
+
+        for(Productos productos : ProductosSellecionados){
+            int cantidad = productos.getContador();
+            double precio =  productos.getPreu();
+            double PrecioProdcuto = cantidad * precio;
+            preuTotal += PrecioProdcuto;
+        }
+        TextView precioTotal = (TextView) findViewById(R.id.Fprecio);
+        precioTotal.setText(String.valueOf(preuTotal)+" €");
+    }
+/*
+    public void ObtenerNumeroTarjeta(){
+        List<UsuariTrobat> usuariTrobats = new ArrayList<>();
+        String NTarjeta="";
+        for (int i = 0; i < usuariTrobats.size();i++){
+            NTarjeta = usuariTrobats.get(i).getnTargeta();
+            System.out.println(usuariTrobats.get(i).getnTargeta());
+            System.out.println(usuariTrobat.getnTargeta());
+        }
+
+        TextView NumTar = (TextView) findViewById(R.id.FNTarjeta);
+        NumTar.setText(NTarjeta);
     }*/
+
+
 }

@@ -49,15 +49,12 @@ public class carrito extends AppCompatActivity implements View.OnClickListener {
         //MENU
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        ImageView atras = (ImageView) findViewById(R.id.flechaatras);
-        atras.setOnClickListener(this);
-
-                recyclerViewProductos = (RecyclerView) findViewById(R.id.carritoRecycler);
-                recyclerViewProductos.setLayoutManager(new LinearLayoutManager(carrito.this));
+        recyclerViewProductos = (RecyclerView) findViewById(R.id.carritoRecycler);
+        recyclerViewProductos.setLayoutManager(new LinearLayoutManager(carrito.this));
 
 
-            selectedProductos = ProductoSelecionado.getInstance().getSelectedProductos();
-            System.out.println(selectedProductos.size());
+        selectedProductos = ProductoSelecionado.getInstance().getSelectedProductos();
+        System.out.println(selectedProductos.size());
 
             if (selectedProductos != null && !selectedProductos.isEmpty()) {
                 adaptadorCarito = new RecyclerViewAdaptadorCarito(selectedProductos);
@@ -85,6 +82,13 @@ public class carrito extends AppCompatActivity implements View.OnClickListener {
     }
 
     @Override
+    public boolean onSupportNavigateUp() {
+        Intent intent =  new Intent(this,Botiga.class);
+        startActivity(intent);
+        return true;
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
@@ -105,6 +109,10 @@ public class carrito extends AppCompatActivity implements View.OnClickListener {
                 // Acción para la "Opción 1"
                 Intent intent2 = new Intent(this, MainActivity.class);
                 startActivity(intent2);
+                return true;
+            case R.id.comandas:
+                Intent intent3 = new Intent(this,comandas.class);
+                startActivity(intent3);
                 return true;
         }
 

@@ -18,5 +18,8 @@ public interface ApiService {
     Call<List<Productos>> ObtenerProductos();
 
     @POST("crearComanda")
-    Call<Respuesta> EnviarComando(@Body List<Productos> selectedProducts);
+    Call<Respuesta> EnviarComando(@Body List<ProductosEnviar> ListaProductos);
+
+    @GET("getComandes")
+    Call<List<RecibirComandas>> RecibirComandas ();
 }

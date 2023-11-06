@@ -1,13 +1,20 @@
 package com.example.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.myapplication.databinding.ActivityBotigaBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -19,12 +26,15 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class DadesUsuari extends AppCompatActivity implements View.OnClickListener {
+public class DadesUsuari extends AppCompatActivity {
 
-    //private static String URL="http://192.168.1.35:3001/";
-    private static String URL="http://192.168.205.213:3001/";
+    private static String URL="http://192.168.1.35:3001/";
+    //private static String URL="http://192.168.205.213:3001/";
     public ApiService apiService;
     private ArrayList<TextView> textos;
+
+    private AppBarConfiguration appBarConfiguration;
+    private ActivityBotigaBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +42,9 @@ public class DadesUsuari extends AppCompatActivity implements View.OnClickListen
         setContentView(R.layout.activity_dades_usuari);
 
         String user = getIntent().getStringExtra("infouser");
+
+        //MENU
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(URL)
@@ -87,24 +100,43 @@ public class DadesUsuari extends AppCompatActivity implements View.OnClickListen
             }
         });
 
-        FloatingActionButton boton = (FloatingActionButton) findViewById(R.id.volverAtras);
-        boton.setOnClickListener(this);
+    }
 
-
-        FloatingActionButton boton2 = (FloatingActionButton) findViewById(R.id.cerrarsession);
-        boton2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent cerrar = new Intent(DadesUsuari.this,MainActivity.class);
-                startActivity(cerrar);
-            }
-        });
-
+    //Accion flecha
+    @Override
+    public boolean onSupportNavigateUp() {
+        Intent intent =  new Intent(this,Botiga.class);
+        startActivity(intent);
+        return true;
     }
 
     @Override
-    public void onClick(View v) {
-        Intent volver  = new Intent(this,Botiga.class);
-        startActivity(volver);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        //Mostrar y enviar a donde queremos ir
+        switch (id) {
+            case R.id.dades:
+                // Acción para la "Opción 1"
+                Intent intent1 = new Intent(this, DadesUsuari.class);
+                startActivity(intent1);
+                return true;
+            case R.id.cerrar:
+                // Acción para la "Opción 1"
+                Intent intent2 = new Intent(this, MainActivity.class);
+                startActivity(intent2);
+                return true;
+            case R.id.comandas:
+                Intent intent3 = new Intent(this,comandas.class);
+                startActivity(intent3);
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
