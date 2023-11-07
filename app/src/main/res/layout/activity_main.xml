@@ -39,7 +39,7 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login"
-        app:layout_constraintVertical_bias="0.905" />
+        app:layout_constraintVertical_bias="0.804" />
 
     <TextView
         android:id="@+id/user"
@@ -65,13 +65,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login"
         app:layout_constraintVertical_bias="0.593"
-        app:srcCompat="@drawable/logo" />
+        app:srcCompat="@drawable/pedralbeslogo" />
 
     <EditText
         android:id="@+id/users"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="12dp"
         android:ems="10"
         android:hint="@string/Usuari"
         android:inputType="textPersonName"
@@ -93,13 +93,13 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/users"
-        app:layout_constraintVertical_bias="0.518" />
+        app:layout_constraintVertical_bias="0.592" />
 
     <EditText
         android:id="@+id/contra"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="44dp"
         android:ems="10"
         android:hint="@string/contrasenya"
         android:inputType="textPassword"
@@ -107,5 +107,34 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/missatge"
+        android:textColor="#000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.356"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/acceder"
+        app:layout_constraintVertical_bias="0.173" />
+
+    <TextView
+        android:id="@+id/registro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:onClick="onClick"
+        android:text="@string/Registrar"
+        android:textColor="#AA01BD"
+        android:textStyle="bold|italic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.086"
+        app:layout_constraintStart_toEndOf="@+id/textView5"
+        app:layout_constraintTop_toBottomOf="@+id/acceder"
+        app:layout_constraintVertical_bias="0.165" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,6 +4,7 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class Productos implements Serializable {
     @SerializedName("id_producte")
@@ -27,6 +28,9 @@ public class Productos implements Serializable {
 
     @SerializedName("cantidad")
     private int contador;
+
+    @SerializedName("tipus_producte")
+    private String tipus_producte;
 
     public Productos() {
     }
@@ -90,6 +94,15 @@ public class Productos implements Serializable {
 
     public void setContador(int contador) {
         this.contador = contador;
+    }
+
+
+    public String getTipus_producte() {
+        return tipus_producte;
+    }
+
+    public void setTipus_producte(String tipus_producte) {
+        this.tipus_producte = tipus_producte;
     }
 
 

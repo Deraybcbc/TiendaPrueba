@@ -28,7 +28,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DadesUsuari extends AppCompatActivity {
 
-    private static String URL="http://192.168.1.35:3001/";
+    private static final String URL = "http://192.168.1.35:3044/";
     //private static String URL="http://192.168.205.213:3001/";
     public ApiService apiService;
     private ArrayList<TextView> textos;
@@ -130,6 +130,7 @@ public class DadesUsuari extends AppCompatActivity {
                 // Acción para la "Opción 1"
                 Intent intent2 = new Intent(this, MainActivity.class);
                 startActivity(intent2);
+                finish();
                 return true;
             case R.id.comandas:
                 Intent intent3 = new Intent(this,comandas.class);

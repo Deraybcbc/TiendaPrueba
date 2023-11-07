@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
 
 import retrofit2.Call;
@@ -35,7 +36,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class finalizarcompra extends AppCompatActivity {
 
-    private static final String URL = "http://192.168.1.35:3001/";
+    private static final String URL = "http://192.168.1.35:3044/";
     //private static final String URL = "http://192.168.205.213:3001/";
 
 
@@ -57,6 +58,8 @@ public class finalizarcompra extends AppCompatActivity {
 
     private String selectedDate;
     private String Hora;
+    private  Button pagar;
+    private boolean fechaSelected = false;
 
 
     @SuppressLint("MissingInflatedId")
@@ -70,14 +73,38 @@ public class finalizarcompra extends AppCompatActivity {
 
         //BUSCAR IDS
         textoFecha = (TextView) findViewById(R.id.FData);
-        textoHora = (TextView)findViewById(R.id.Fhora);
+        textoHora = (TextView) findViewById(R.id.Fhora);
+
+
+
+        ImageButton Bfehca = (ImageButton) findViewById(R.id.BFecha);
+        Bfehca.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ObtenerFecha();
+            }
+        });
+
+        ImageButton Bhora = (ImageButton) findViewById(R.id.BHora);
+        Bhora.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ObtenerHora();
+            }
+        });
+
 
         //ALERTA DE COMANDA
-        Button pagar = (Button) findViewById(R.id.pagar);
+        pagar = (Button) findViewById(R.id.pagar);
+
         pagar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(finalizarcompra.this);
+                if (textoFecha.getText().toString().isEmpty() || textoHora.getText().toString().isEmpty()) {
+                    Toast.makeText(finalizarcompra.this, "debes rellenar los campos", Toast.LENGTH_SHORT).show();
+                } else {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(finalizarcompra.this);
                 builder.setTitle("Comanda");
                 builder.setMessage("Esteu segur de crear aquesta comanda");
 
@@ -87,7 +114,7 @@ public class finalizarcompra extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         //Hacer el retrofit
 
-                        Retrofit retrofit =  new Retrofit.Builder()
+                        Retrofit retrofit = new Retrofit.Builder()
                                 .baseUrl(URL)
                                 .addConverterFactory(GsonConverterFactory.create())
                                 .build();
@@ -96,36 +123,44 @@ public class finalizarcompra extends AppCompatActivity {
 
                         List<Productos> selectedProducts = ProductoSelecionado.getInstance().getSelectedProductos();
                         List<ProductosEnviar> listaProductos = new ArrayList<>();
+                        List<ProductosEnviarID> listaProductosID = new ArrayList<>();
 
-                        for (Productos productos: selectedProducts){
+
+                        for (Productos productos : selectedProducts) {
                             int id = productos.getId_producte();
                             int cantidad = productos.getContador();
 
-                            ProductosEnviar productosEnviar = new ProductosEnviar(id,cantidad,Hora,selectedDate);
-                            listaProductos.add(productosEnviar);
+                            ProductosEnviarID productosEnviar = new ProductosEnviarID(id, cantidad);
+                            listaProductosID.add(productosEnviar);
+
+                            for (int j = 0; j < listaProductos.size(); j++) {
+                                //System.out.println("IDS: "+ listaProductos.get(j).getProductos().get(j).getIdproducto());
+                                System.out.println("DIA: " + listaProductos.get(j).getDia_recollida());
+                                System.out.println("HORA: " + listaProductos.get(j).getHora_recollida());
+                            }
                         }
+                        ProductosEnviar productosEnviar1 = new ProductosEnviar(listaProductosID, Hora, selectedDate);
+                        listaProductos.add(productosEnviar1);
+
 
                         Call<Respuesta> call = apiService.EnviarComando(listaProductos);
 
                         call.enqueue(new Callback<Respuesta>() {
                             @Override
                             public void onResponse(Call<Respuesta> call, Response<Respuesta> response) {
-                                if(response.isSuccessful()){
-                                    Log.d("CONEXION","CONECTADO CON EL SERVIDOR");
-
+                                if (response.isSuccessful()) {
+                                    Log.d("CONEXION", "CONECTADO CON EL SERVIDOR");
 
                                     Respuesta r = response.body();
 
-                                    if(r.isAutoritzacio()){
-                                        Log.d("COMANDA","COMANDO HECHA");
+                                    if (r.isAutoritzacio()) {
+                                        Log.d("COMANDA", "COMANDO HECHA");
                                         Toast.makeText(finalizarcompra.this, "Comando creada", Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(finalizarcompra.this,Botiga.class);
+                                        Intent intent = new Intent(finalizarcompra.this, Botiga.class);
                                         startActivity(intent);
                                         ProductoSelecionado.getInstance().clearSelectedProductos();
-                                    }
-
-                                    else{
-                                        Log.d("COMANDO","FALLO AL HACER LA COMANDA");
+                                    } else {
+                                        Log.d("COMANDO", "FALLO AL HACER LA COMANDA");
                                     }
 
 
@@ -134,10 +169,11 @@ public class finalizarcompra extends AppCompatActivity {
 
                             @Override
                             public void onFailure(Call<Respuesta> call, Throwable t) {
-                                Log.e("ERROR",t.getMessage());
+                                Log.e("ERROR", t.getMessage());
                             }
                         });
                     }
+
                 });
 
                 builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -152,25 +188,12 @@ public class finalizarcompra extends AppCompatActivity {
 
                 // Mostrar el cuadro de diálogo
                 builder.show();
-
             }
-        });
+        }});
 
-        ImageButton BFecha = (ImageButton) findViewById(R.id.BFecha);
-        BFecha.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ObtenerFecha();
-            }
-        });
 
-        ImageButton BHora = (ImageButton) findViewById(R.id.BHora);
-        BHora.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ObtenerHora();
-            }
-        });
+
+
 
         CalcularPrecio();
         //ObtenerNumeroTarjeta();
@@ -192,6 +215,16 @@ public class finalizarcompra extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
+    private void checkFechaSelected() {
+        if (fechaSelected) {
+            pagar.setEnabled(true); // Enable the "Pagar" button
+        } else {
+            Toast.makeText(this, "Debes seleccionar la fecha primero", Toast.LENGTH_SHORT).show();
+            pagar.setEnabled(false); // Disable the "Pagar" button
+        }
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -290,6 +323,8 @@ public class finalizarcompra extends AppCompatActivity {
         TextView precioTotal = (TextView) findViewById(R.id.Fprecio);
         precioTotal.setText(String.valueOf(preuTotal)+" €");
     }
+
+
 /*
     public void ObtenerNumeroTarjeta(){
         List<UsuariTrobat> usuariTrobats = new ArrayList<>();

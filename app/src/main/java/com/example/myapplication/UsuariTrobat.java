@@ -34,8 +34,7 @@ public class UsuariTrobat {
     public UsuariTrobat() {
     }
 
-    public UsuariTrobat(int id_usuari, String usuario, String nom, String cognoms, String passwd, String nTargeta, String CVV, String dataCaducitat, String correu) {
-        this.id_usuari = id_usuari;
+    public UsuariTrobat( String usuario, String nom, String cognoms, String passwd, String nTargeta, String CVV, String dataCaducitat, String correu) {
         this.usuario = usuario;
         this.nom = nom;
         this.cognoms = cognoms;

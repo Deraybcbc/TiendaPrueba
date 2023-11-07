@@ -67,6 +67,11 @@ public class RecyclerViewAdaptadorProductos extends RecyclerView.Adapter<Recycle
         return viewHolder;
     }
 
+    public void setProductosFiltrados(List<Productos> productosFiltrados) {
+        productos = productosFiltrados;
+        notifyDataSetChanged();
+    }
+
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Productos producto = productos.get(position);

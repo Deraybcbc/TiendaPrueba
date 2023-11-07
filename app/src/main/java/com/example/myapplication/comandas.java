@@ -18,7 +18,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class comandas extends AppCompatActivity implements View.OnClickListener {
 
-    private String URL="http://192.168.1.35:3001/";
+    private static final String URL = "http://192.168.1.35:3044/";
+    //private static final String URL = "http://192.168.205.213:3001/";
+
     private ApiService apiService;
 
     @Override

@@ -22,4 +22,7 @@ public interface ApiService {
 
     @GET("getComandes")
     Call<List<RecibirComandas>> RecibirComandas ();
+
+    @POST("registrarUsuari")
+    Call<Respuesta> EnviarUsuario(@Body UsuariTrobat usuariTrobat);
 }

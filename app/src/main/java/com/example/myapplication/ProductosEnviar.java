@@ -2,12 +2,11 @@ package com.example.myapplication;
 
 import com.google.gson.annotations.SerializedName;
 
-public class ProductosEnviar {
-    @SerializedName("id")
-    private int Idproducto;
+import java.util.List;
 
-    @SerializedName("cantidad")
-    private int cantidad;
+public class ProductosEnviar {
+    @SerializedName("productos")
+    private List<ProductosEnviarID> productos;
 
     @SerializedName("hora_recollida")
     private String hora_recollida;
@@ -19,9 +18,8 @@ public class ProductosEnviar {
     private double preu;
 
 
-    public ProductosEnviar(int idproducto, int cantidad,String hora_recollida, String dia_recollida) {
-        Idproducto = idproducto;
-        this.cantidad = cantidad;
+    public ProductosEnviar(List<ProductosEnviarID> productes, String hora_recollida, String dia_recollida) {
+        this.productos = productes;
         this.hora_recollida = hora_recollida;
         this.dia_recollida = dia_recollida;
     }
@@ -50,19 +48,11 @@ public class ProductosEnviar {
         this.preu = preu;
     }
 
-    public int getIdproducto() {
-        return Idproducto;
+    public List<ProductosEnviarID> getProductos() {
+        return productos;
     }
 
-    public void setIdproducto(int idproducto) {
-        Idproducto = idproducto;
-    }
-
-    public int getCantidad() {
-        return cantidad;
-    }
-
-    public void setCantidad(int cantidad) {
-        this.cantidad = cantidad;
+    public void setProductos(List<ProductosEnviarID> productos) {
+        this.productos = productos;
     }
 }

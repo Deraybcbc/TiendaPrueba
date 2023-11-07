@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,8 +12,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -24,7 +27,9 @@ import com.example.myapplication.databinding.ActivityBotigaBinding;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -45,7 +50,7 @@ public class Botiga extends AppCompatActivity  {
 
     public String usuari;
 
-    private static final String URL = "http://192.168.1.35:3001/";
+    private static final String URL = "http://192.168.1.35:3044/";
     //private static final String URL = "http://192.168.205.213:3001/";
 
     @Override
@@ -78,15 +83,41 @@ public class Botiga extends AppCompatActivity  {
                     Log.d("CONEXION","CONEXION SERVIDOR EXITOSA");
 
                     List<Productos> listaproductos = response.body();
-                    for(int i = 0; i < listaproductos.size();i++){
-                        System.out.println("BORITGA: " +listaproductos.get(i).getId_producte());
 
+                    // Obtener una lista de tipos de productos únicos
+                    Set<String> tiposProductos = new HashSet<>();
+                    for (Productos producto : listaproductos) {
+                        tiposProductos.add(producto.getTipus_producte());
                     }
 
-                    Log.d("ListaProductos","Lista:"+listaproductos);
+                    LinearLayout layout = findViewById(R.id.filtrarproducto); // Este sería tu layout donde deseas agregar los botones
+
+                    for (String tipo : tiposProductos) {
+                        Button button = new Button(Botiga.this);
+                        button.setText(tipo);
+                        // Añadir márgenes a los botones
+                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.WRAP_CONTENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT
+                        );
+                        params.setMargins(20, 20, 20, 20); // Establece los márgenes (en este caso, 20px en la parte inferior)
+
+                        button.setLayoutParams(params);
+                        button.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                // Filtrar productos al hacer clic en el botón del tipo
+                                String tipoSeleccionado = ((Button) view).getText().toString();
+                                List<Productos> productosFiltrados = filtrarPorTipo(listaproductos, tipoSeleccionado);
+                                adaptadorProductos.setProductosFiltrados(productosFiltrados);
+                                adaptadorProductos.notifyDataSetChanged();
+                            }
+                        });
+                        layout.addView(button);
+                    }
+
 
                     //Para mostrar los Productos con el RecyclerView
-
                     recyclerViewProductos=(RecyclerView)findViewById(R.id.Productos);
                     recyclerViewProductos.setLayoutManager(new LinearLayoutManager(Botiga.this));
                     adaptadorProductos=new RecyclerViewAdaptadorProductos(listaproductos);
@@ -124,6 +155,8 @@ public class Botiga extends AppCompatActivity  {
 
         usuari = getIntent().getStringExtra("user");
 
+        System.out.println("USUARIO: "+usuari);
+
         if(usuari==null){
             Log.d("VACIO","SOLO PARA NO MOSTRAR VACIO");
         }else{
@@ -133,12 +166,22 @@ public class Botiga extends AppCompatActivity  {
 
     }
 
+    private List<Productos> filtrarPorTipo(List<Productos> todosLosProductos, String tipoSeleccionado) {
+        List<Productos> productosFiltrados = new ArrayList<>();
+        for (Productos producto : todosLosProductos) {
+            if (producto.getTipus_producte().equals(tipoSeleccionado)) {
+                productosFiltrados.add(producto);
+            }
+        }
+        return productosFiltrados;
+    }
+
     //ACCION DE FLECHA
     @Override
     public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_botiga);
-        return NavigationUI.navigateUp(navController, appBarConfiguration)
-                || super.onSupportNavigateUp();
+        Intent intent = new Intent(this,Botiga.class);
+        startActivity(intent);
+        return true;
     }
 
 
@@ -163,6 +206,7 @@ public class Botiga extends AppCompatActivity  {
                 // Acción para la "Opción 1"
                 Intent intent2 = new Intent(this, MainActivity.class);
                 startActivity(intent2);
+                finish();
                 return true;
             case R.id.comandas:
                 Intent intent3 = new Intent(this,comandas.class);

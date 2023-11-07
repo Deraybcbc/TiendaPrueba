@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.concurrent.TimeUnit;
@@ -24,12 +25,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String Usuario;
     private String Contrasenya;
 
-    private static final String URL = "http://192.168.1.35:3001/";
+    private static final String URL = "http://192.168.1.35:3044/";
     //private static final String URL = "http://192.168.205.213:3001/";
 
     public static ApiService apiService;
     private EditText User;
     private EditText Contras;
+
+    private TextView registro;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +41,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Button boton = (Button) findViewById(R.id.acceder);
         boton.setOnClickListener(this);
+
+        TextView registro = (TextView) findViewById(R.id.registro);
+        registro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,registrar.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -55,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else{
             VerificarUsuari();
         }
+
     }
 
     private void VerificarUsuari() {
