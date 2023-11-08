@@ -43,21 +43,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/logo" />
-
-    <ImageView
-        android:id="@+id/botigaAtras"
-        android:layout_width="51dp"
-        android:layout_height="43dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="5dp"
-        app:layout_constraintBottom_toBottomOf="@+id/toolbar5"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/textView4"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.384"
-        app:srcCompat="@drawable/_60825" />
+        app:srcCompat="@drawable/pedralbeslogo" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/Comandas"

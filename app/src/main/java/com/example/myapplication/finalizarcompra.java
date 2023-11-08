@@ -37,7 +37,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class finalizarcompra extends AppCompatActivity {
 
     private static final String URL = "http://192.168.1.35:3044/";
-    //private static final String URL = "http://192.168.205.213:3001/";
+    //private static final String URL = "http://pfcgrup7.dam.inspedralbes.cat:3044";
 
 
     public static ApiService apiService;
@@ -58,6 +58,7 @@ public class finalizarcompra extends AppCompatActivity {
 
     private String selectedDate;
     private String Hora;
+    private String servidor;
     private  Button pagar;
     private boolean fechaSelected = false;
 
@@ -139,7 +140,7 @@ public class finalizarcompra extends AppCompatActivity {
                                 System.out.println("HORA: " + listaProductos.get(j).getHora_recollida());
                             }
                         }
-                        ProductosEnviar productosEnviar1 = new ProductosEnviar(listaProductosID, Hora, selectedDate);
+                        ProductosEnviar productosEnviar1 = new ProductosEnviar(listaProductosID, Hora, servidor);
                         listaProductos.add(productosEnviar1);
 
 
@@ -289,6 +290,7 @@ public class finalizarcompra extends AppCompatActivity {
 
                 // Procesa la fecha seleccionada aquí y actualiza el contenido del EditText
                 selectedDate = selectedDayStr + "/" + selectedMonthStr + "/" + selectedYear;
+                servidor = selectedYear+"/"+selectedMonthStr+"/"+selectedDayStr;
                 textoFecha.setText(selectedDate);
             }
         }, day, month, year);

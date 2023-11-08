@@ -24,7 +24,7 @@ public class registrar extends AppCompatActivity {
 
     private static final String URL = "http://192.168.1.35:3044/";
 
-    //private static final String URL = "http://192.168.205.213:3001/";
+    //private static final String URL = "http://pfcgrup7.dam.inspedralbes.cat:3044";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

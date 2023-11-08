@@ -12,7 +12,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.myapplication.databinding.ActivityBotigaBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -29,17 +33,23 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class DadesUsuari extends AppCompatActivity {
 
     private static final String URL = "http://192.168.1.35:3044/";
-    //private static String URL="http://192.168.205.213:3001/";
+    //private static final String URL = "http://pfcgrup7.dam.inspedralbes.cat:3044";
     public ApiService apiService;
-    private ArrayList<TextView> textos;
-
     private AppBarConfiguration appBarConfiguration;
     private ActivityBotigaBinding binding;
+    public ImageButton vercontra,verCVV,actualizar;
+    private boolean visibleContra=false;
+    private boolean visibleCVV=false;
+
+    private String infonom,infocognom,infocorreo,infousuario,infocontr,infonT,infodata,infocvv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dades_usuari);
+
+        vercontra =  (ImageButton)findViewById(R.id.vercontra);
+        verCVV = (ImageButton) findViewById(R.id.verCVV);
 
         String user = getIntent().getStringExtra("infouser");
 
@@ -67,22 +77,85 @@ public class DadesUsuari extends AppCompatActivity {
 
                     if(infousers!=null){
                         for (int i = 0 ; i < infousers.size();i++) {
-                            TextView infouser = (TextView) findViewById(R.id.inforuserD);
+                            EditText infouser = (EditText) findViewById(R.id.infousersD);
                             infouser.setText(infousers.get(i).getUsuario());
-                            TextView infon = (TextView) findViewById(R.id.infonom);
+
+                            EditText infon = (EditText) findViewById(R.id.infonoms);
                             infon.setText(infousers.get(i).getNom());
-                            TextView infoc = (TextView) findViewById(R.id.infocognom);
+
+                            EditText infoc = (EditText) findViewById(R.id.infocognoms);
                             infoc.setText(infousers.get(i).getCognoms());
-                            TextView infocorreu = (TextView) findViewById(R.id.infocorreu);
+
+                            EditText infocorreu = (EditText) findViewById(R.id.infocorreus);
                             infocorreu.setText(infousers.get(i).getCorreu());
-                            TextView infocontraD = (TextView) findViewById(R.id.infocontraD);
-                            infocontraD.setText(infousers.get(i).getPasswd());
-                            TextView infoNumTargeta = (TextView) findViewById(R.id.infoNumTargeta);
+
+                            EditText infocontraD = (EditText) findViewById(R.id.infocontrasD);
+                            vercontra.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if(visibleContra){
+                                        for (int j = 0 ; j < infousers.size();j++) {
+                                            infocontraD.setInputType(129);
+                                            visibleContra = false;
+                                            infocontraD.setText(infousers.get(j).getPasswd());
+                                        }
+                                    }else{
+                                        for (int j = 0 ; j < infousers.size();j++) {
+                                            infocontraD.setInputType(128);
+                                            visibleContra = true;
+                                            infocontraD.setText(infousers.get(j).getPasswd());
+                                        }
+                                    }
+                                }
+                            });
+
+                            EditText infoNumTargeta = (EditText) findViewById(R.id.infoNumTargetas);
                             infoNumTargeta.setText(infousers.get(i).getnTargeta());
-                            TextView infoCVV = (TextView) findViewById(R.id.infoCVV);
-                            infoCVV.setText(infousers.get(i).getCVV());
-                            TextView infofecha = (TextView) findViewById(R.id.infofecha);
+
+                            EditText infoCVV = (EditText) findViewById(R.id.infoCVVS);
+
+                            verCVV.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if(visibleCVV){
+                                        for (int i = 0 ; i < infousers.size();i++) {
+
+                                            infoCVV.setInputType(129);
+                                            visibleCVV = false;
+                                            infoCVV.setText(infousers.get(i).getCVV());
+                                        }
+                                    }else{
+                                        //sino es 128 puede ser 144
+                                        for (int i = 0 ; i < infousers.size();i++) {
+
+                                            infoCVV.setInputType(128);
+                                            visibleCVV = true;
+                                            infoCVV.setText(infousers.get(i).getCVV());
+                                        }
+                                    }
+                                }
+                            });
+
+                            EditText infofecha = (EditText) findViewById(R.id.infofechas);
                             infofecha.setText(infousers.get(i).getDataCaducitat());
+/*
+                            infonom = infousers.get(i).getNom();
+                            infocognom = infousers.get(i).getCognoms();
+                            infocorreo = infousers.get(i).getCorreu();
+                            infousuario = infousers.get(i).getUsuario();
+                            infocontr = infousers.get(i).getPasswd();
+                            infonT = infousers.get(i).getnTargeta();
+                            infodata = infousers.get(i).getDataCaducitat();
+                            infocvv = infousers.get(i).getCVV();
+                            Log.d("NOM: ",infonom);
+                            Log.d("infocognom: ",infocognom);
+                            Log.d("infocorreo: ",infocorreo);
+                            Log.d("infousuario: ",infousuario);
+                            Log.d("infocontr: ",infocontr);
+                            Log.d("infonT: ",infonT);
+                            Log.d("infodata: ",infodata);
+                            Log.d("infocvv: ",infocvv);*/
+
                         }
                     }
                     else{
@@ -97,6 +170,68 @@ public class DadesUsuari extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<UsuariTrobat>> call, Throwable t) {
                 Log.d("ERROR",t.getMessage());
+            }
+        });
+
+
+
+
+
+
+
+        actualizar = (ImageButton) findViewById(R.id.actualizzar);
+        actualizar.setOnClickListener(new View.OnClickListener() {
+
+
+            @Override
+            public void onClick(View v) {
+
+                EditText infouser = (EditText) findViewById(R.id.infousersD);
+                EditText infon = (EditText) findViewById(R.id.infonoms);
+                EditText infoc = (EditText) findViewById(R.id.infocognoms);
+                EditText infocorreu = (EditText) findViewById(R.id.infocorreus);
+                EditText infocontraD = (EditText) findViewById(R.id.infocontrasD);
+                EditText infoNumTargeta = (EditText) findViewById(R.id.infoNumTargetas);
+                EditText infoCVV = (EditText) findViewById(R.id.infoCVVS);
+                EditText infofecha = (EditText) findViewById(R.id.infofechas);
+
+
+
+                String infonom = infon.getText().toString();
+                String infocognom = infoc.getText().toString();
+                String infocorreo = infocorreu.getText().toString();
+                String infousuario = infouser.getText().toString();
+                String infocontr = infocontraD.getText().toString();
+                String infonT= infoNumTargeta.getText().toString();
+                String infodata = infofecha.getText().toString();
+                String infocvv = infoCVV.getText().toString();
+
+                Retrofit retrofit1 = new Retrofit.Builder()
+                        .baseUrl(URL)
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+                ApiService  apiService = retrofit1.create(ApiService.class);
+
+                UsuariTrobat usuarioactualizado = new UsuariTrobat(infousuario,infonom,infocognom,infocontr,infonT,infocvv,infodata,infocorreo);
+
+                Call<Void> callUpdate  = apiService.EnviarUsuarioActualizado(usuarioactualizado);
+
+                callUpdate .enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        if(response.isSuccessful()){
+                            Log.d("CONEXION","SERVIDOR CONECTADO");
+                            Toast.makeText(DadesUsuari.this, "Usuario Modificado", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(DadesUsuari.this,MainActivity.class);
+                            startActivity(intent);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        Log.d("CONEXION",t.getMessage());
+                    }
+                });
             }
         });
 

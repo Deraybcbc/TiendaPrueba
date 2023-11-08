@@ -19,6 +19,8 @@
     <string name="registre">Registre</string>
     <string name="cancelar">Cancelar</string>
 
+    <string name="idComandas">Comanda :</string>
+
 
     <!-- Strings used for fragments for dades -->
     <string name="nom">Nom</string>

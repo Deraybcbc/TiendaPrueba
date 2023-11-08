@@ -25,4 +25,7 @@ public interface ApiService {
 
     @POST("registrarUsuari")
     Call<Respuesta> EnviarUsuario(@Body UsuariTrobat usuariTrobat);
+
+    @POST("actualizarUsuario")
+    Call<Void> EnviarUsuarioActualizado(@Body UsuariTrobat usuariTrobat);
 }

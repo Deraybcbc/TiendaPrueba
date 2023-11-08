@@ -30,8 +30,8 @@ public class RecyclerViewAdaptadorCarito extends RecyclerView.Adapter<RecyclerVi
 
     private OnItemClickListener onItemClickListener;
 
-    private static final String URL = "http://192.168.1.35:3001/";
-    //private static final String URL = "http://192.168.205.213:3001/";
+    //private static final String URL = "http://192.168.1.35:3044/";
+    private static final String URL = "http://192.168.206.55:3044/";
 
 
     public static ApiService apiService;
