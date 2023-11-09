@@ -83,55 +83,58 @@ public class comandas extends AppCompatActivity {
             JSONArray comandasArray = (JSONArray) args[0]; // Suponiendo que el servidor envía un array JSON
 
             Log.d("SocketData", "JSON Recibido: " + comandasArray.toString());
-
-
-            for (int i = 0; i < comandasArray.length(); i++) {
-                if (comandasArray.isNull(i)){
+            if(comandasArray.length() == 0){
+                runOnUiThread(()->{
                     Toast.makeText(comandas.this, "No has fet cap comanda", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    try {
-                        JSONObject comanda = comandasArray.getJSONObject(i);
+                });
+            }else {
+                for (int i = 0; i < comandasArray.length(); i++) {
+                    if (comandasArray.isNull(i)) {
+                        Toast.makeText(comandas.this, "No has fet cap comanda", Toast.LENGTH_SHORT).show();
+                    } else {
+                        try {
+                            JSONObject comanda = comandasArray.getJSONObject(i);
 
-                        int id_comanda = comanda.getInt("id_comanda");
-                        int id_usuario = comanda.getInt("id_usuari");
-                        String data_comanda = comanda.getString("data_comanda");
-                        String estat = comanda.getString("estat");
-                        String nombre_usuario = comanda.getString("nombre_usuario");
+                            int id_comanda = comanda.getInt("id_comanda");
+                            int id_usuario = comanda.getInt("id_usuari");
+                            String data_comanda = comanda.getString("data_comanda");
+                            String estat = comanda.getString("estat");
+                            String nombre_usuario = comanda.getString("nombre_usuario");
 
-                        JSONArray productosArray = comanda.getJSONArray("productos");
-                        List<Productos> productosList = new ArrayList<>();
+                            JSONArray productosArray = comanda.getJSONArray("productos");
+                            List<Productos> productosList = new ArrayList<>();
 
-                        for (int j = 0; j < productosArray.length(); j++) {
-                            JSONObject producto = productosArray.getJSONObject(j);
+                            for (int j = 0; j < productosArray.length(); j++) {
+                                JSONObject producto = productosArray.getJSONObject(j);
 
-                            String nom = producto.getString("nombre_producto");
-                            int cantidad = producto.getInt("quantitat");
-                            Productos prod = new Productos(nom, cantidad);
-                            productosList.add(prod);
+                                String nom = producto.getString("nombre_producto");
+                                int cantidad = producto.getInt("quantitat");
+                                Productos prod = new Productos(nom, cantidad);
+                                productosList.add(prod);
 
+                            }
+
+                            // Crea un objeto de RecibirComandas con los datos obtenidos
+                            RecibirComandas recibirComanda = new RecibirComandas(id_comanda, id_usuario, data_comanda, estat, nombre_usuario, productosList);
+                            System.out.println("COMANDA: " + recibirComanda.getNombre_usuario());
+
+                            comandasList.add(recibirComanda);
+
+                            runOnUiThread(() -> {
+                                recyclerViewComandas = (RecyclerView) findViewById(R.id.Comandas);
+                                recyclerViewComandas.setLayoutManager(new LinearLayoutManager(comandas.this));
+                                adaptadorComandas = new RecyclerViewAdaptadorComandas(comandasList);
+                                recyclerViewComandas.setAdapter(adaptadorComandas);
+                                adaptadorComandas.notifyDataSetChanged();
+                            });
+
+
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
                         }
-
-                        // Crea un objeto de RecibirComandas con los datos obtenidos
-                        RecibirComandas recibirComanda = new RecibirComandas(id_comanda, id_usuario, data_comanda, estat, nombre_usuario, productosList);
-                        System.out.println("COMANDA: " + recibirComanda.getNombre_usuario());
-
-                        comandasList.add(recibirComanda);
-
-                        runOnUiThread(() -> {
-                            recyclerViewComandas = (RecyclerView) findViewById(R.id.Comandas);
-                            recyclerViewComandas.setLayoutManager(new LinearLayoutManager(comandas.this));
-                            adaptadorComandas = new RecyclerViewAdaptadorComandas(comandasList);
-                            recyclerViewComandas.setAdapter(adaptadorComandas);
-                            adaptadorComandas.notifyDataSetChanged();
-                        });
-
-
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
                     }
-                }
 
+                }
             }
         }
     };

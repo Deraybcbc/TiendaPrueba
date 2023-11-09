@@ -51,25 +51,6 @@ public class RecyclerViewAdaptadorComandas extends RecyclerView.Adapter<Recycler
 
         holder.Cproductos.setText("PRODUCTOS:"+"\n"+productosCompletos);
 
-        /*for(int i=0; i < comanda.getProductos().size();i++){
-
-            //TextView text = new TextView(this);
-            //holder.text.setText("PRODUCTOS: "+comanda.getProductos().get(i).getNom());
-            holder.Cproductos.setText("PRODUCTOS: "+comanda.getProductos().get(i).getNom());
-            holder.Ccantidad.setText("CANTIDAD: "+String.valueOf(comanda.getProductos().get(i).getContador()));
-        }*/
-/*
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), Botiga.class);
-                intent.putExtra("id_comanda", comanda.getId_comanda());
-                intent.putExtra("id_usuario", comanda.getId_usuari());
-                // Agrega otros datos de la comanda a los extras del Intent si es necesario
-                v.getContext().startActivity(intent);
-            }
-        });
-*/
     }
 
     public RecyclerViewAdaptadorComandas(ArrayList<RecibirComandas> comandasList) {
