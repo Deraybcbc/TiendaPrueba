@@ -36,8 +36,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class finalizarcompra extends AppCompatActivity {
 
-    private static final String URL = "http://192.168.1.35:3044/";
-    //private static final String URL = "http://pfcgrup7.dam.inspedralbes.cat:3044";
+    //private static final String URL = "http://192.168.1.35:3044/";
+    private static final String URL = "http://pfcgrup7.dam.inspedralbes.cat:3044";
 
 
     public static ApiService apiService;
@@ -242,6 +242,7 @@ public class finalizarcompra extends AppCompatActivity {
                 // Acción para la "Opción 1"
                 Intent intent2 = new Intent(this, MainActivity.class);
                 startActivity(intent2);
+                ProductoSelecionado.getInstance().clearSelectedProductos();
                 return true;
             case R.id.comandas:
                 Intent intent3 = new Intent(this,comandas.class);

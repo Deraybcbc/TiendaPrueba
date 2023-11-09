@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#fbeed9"
     tools:context=".finalizarcompra">
 
     <androidx.appcompat.widget.Toolbar
@@ -46,8 +47,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/PagarProductos"
-        android:layout_width="0dp"
-        android:layout_height="250dp"
+        android:layout_width="406dp"
+        android:layout_height="304dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -65,12 +66,12 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="100dp"
                 android:orientation="horizontal">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -89,9 +90,10 @@
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="@+id/Fprecio"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.144"
+                        app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="1.0" />
 
                     <TextView
                         android:id="@+id/Fprecio"
@@ -214,50 +216,6 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="0.489"
                         app:srcCompat="@android:drawable/ic_menu_my_calendar" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:orientation="horizontal">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:id="@+id/textView9"
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:background="?attr/colorPrimary"
-                        android:gravity="start|center_vertical"
-                        android:text="@string/NTarjeta"
-                        android:textColor="#FFFFFF"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/FNTarjeta"
-                        android:layout_width="180dp"
-                        android:layout_height="23dp"
-                        android:gravity="center"
-                        android:hint="@string/NTarjeta"
-                        android:textColor="#FFFFFF"
-                        android:textColorHint="#FFFFFF"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="@+id/textView9"
-                        app:layout_constraintHorizontal_bias="0.883"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.506" />
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </LinearLayout>

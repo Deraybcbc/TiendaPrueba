@@ -1,9 +1,7 @@
 package com.example.myapplication;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,31 +16,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.Base64;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-
 public class RecyclerViewAdaptadorCarito extends RecyclerView.Adapter<RecyclerViewAdaptadorCarito.ViewHolder>{
     private List<Productos> productosEnCarrito;
 
 
-    private OnItemClickListener onItemClickListener;
 
-    //private static final String URL = "http://192.168.1.35:3044/";
-    private static final String URL = "http://192.168.206.55:3044/";
+    private LlamadoCambioCantidad llamadoCambioCantidad;
 
-
-    public static ApiService apiService;
 
     public RecyclerViewAdaptadorCarito(List<Productos> productos) {
         this.productosEnCarrito = productos;
-    }
-
-
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        this.onItemClickListener = listener;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
@@ -102,6 +85,9 @@ public class RecyclerViewAdaptadorCarito extends RecyclerView.Adapter<RecyclerVi
                         contador++;
                         producto.setContador(contador);
                         holder.cantidad.setText(String.valueOf(contador));
+                        if (llamadoCambioCantidad != null) {
+                            llamadoCambioCantidad.CambioCantidad();
+                        }
                     }
                 });
 
@@ -113,6 +99,9 @@ public class RecyclerViewAdaptadorCarito extends RecyclerView.Adapter<RecyclerVi
                             contador--;
                             producto.setContador(contador);
                             holder.cantidad.setText(String.valueOf(contador));
+                            if (llamadoCambioCantidad != null) {
+                                llamadoCambioCantidad.CambioCantidad();
+                            }
                         }
                     }
                 });
@@ -132,6 +121,9 @@ public class RecyclerViewAdaptadorCarito extends RecyclerView.Adapter<RecyclerVi
                             notifyItemRemoved(posicion); // Notify the adapter of the item removal
                             System.out.println(selectedProductos.size());
                             Toast.makeText(v.getContext(), "Producto eliminado", Toast.LENGTH_SHORT).show();
+                            if (llamadoCambioCantidad != null) {
+                                llamadoCambioCantidad.CambioCantidad();
+                            }
                         }
                     }
                 });
@@ -141,8 +133,17 @@ public class RecyclerViewAdaptadorCarito extends RecyclerView.Adapter<RecyclerVi
     public int getItemCount() {
             return productosEnCarrito.size();
     }
+    
 
-    public interface OnItemClickListener {
-            void onItemClick(List<Productos> listaProductos);
+    // Declarar una interfaz para el listener de cambios de cantidad
+    public interface LlamadoCambioCantidad {
+        void CambioCantidad();
     }
+
+    // Método para asignar el listener
+    public void AsignarCambioCantidad(LlamadoCambioCantidad listener) {
+        this.llamadoCambioCantidad = listener;
+    }
+
 }
+

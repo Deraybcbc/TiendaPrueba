@@ -25,8 +25,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String Usuario;
     private String Contrasenya;
 
-    private static final String URL = "http://192.168.1.35:3044/";
-    //private static final String URL = "http://pfcgrup7.dam.inspedralbes.cat:3044";
+    //private static final String URL = "http://192.168.1.35:3044/";
+    private static final String URL = "http://pfcgrup7.dam.inspedralbes.cat:3044";
 
     public static ApiService apiService;
     private EditText User;
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     if (r.isAutoritzacio()){
                         Log.d("User","entro");
-                        Intent intent = new Intent(MainActivity.this,DadesUsuari.class);
+                        Intent intent = new Intent(MainActivity.this,Botiga.class);
                         intent.putExtra("user",Usuario);
                         intent.putExtra("contra",Contrasenya);
                         startActivity(intent);

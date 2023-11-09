@@ -13,7 +13,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="167dp"
+            android:layout_height="200dp"
+            android:background="#fbeed9"
             android:orientation="horizontal">
 
             <ImageView
@@ -79,7 +80,7 @@
                     <TextView
                         android:id="@+id/cantidad"
                         android:layout_width="40dp"
-                        android:layout_height="20dp"
+                        android:layout_height="30dp"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
@@ -91,7 +92,7 @@
                         android:layout_height="20dp"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:background="#FFFFFF"
+                        android:background="#fbeed9"
                         app:srcCompat="@drawable/menos" />
 
                     <Button

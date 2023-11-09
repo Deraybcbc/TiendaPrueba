@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -17,14 +18,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class registrar extends AppCompatActivity {
 
-    private EditText nom,cognom,usuari,passwd,correo,cvv,ntarjeta,dataCaducitat;
-    private String noms,cognoms,usuaris,passwds, cvvs, ntarjetas,dataCaducitats,correos;
-    private Button boton,cancelar;
+    private EditText nom, cognom, usuari, passwd, correo, cvv, ntarjeta, dataCaducitat;
+    private String noms, cognoms, usuaris, passwds, cvvs, ntarjetas, dataCaducitats, correos;
+    private Button boton, cancelar;
     private ApiService apiService;
 
-    private static final String URL = "http://192.168.1.35:3044/";
+    //private static final String URL = "http://192.168.1.35:3044/";
 
-    //private static final String URL = "http://pfcgrup7.dam.inspedralbes.cat:3044";
+    private static final String URL = "http://pfcgrup7.dam.inspedralbes.cat:3044";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,15 +42,12 @@ public class registrar extends AppCompatActivity {
         ntarjeta = (EditText) findViewById(R.id.Rtarjeta);
         dataCaducitat = (EditText) findViewById(R.id.Rdata);
         boton = (Button) findViewById(R.id.registrarse);
-        cancelar = (Button)findViewById(R.id.cancelar);
+        cancelar = (Button) findViewById(R.id.cancelar);
 
 
         boton.setOnClickListener(new View.OnClickListener() {
-
-
             @Override
             public void onClick(View v) {
-
                 noms = nom.getText().toString();
                 cognoms = cognom.getText().toString();
                 usuaris = usuari.getText().toString();
@@ -67,45 +65,49 @@ public class registrar extends AppCompatActivity {
                 System.out.println(cvvs);
                 System.out.println(ntarjetas);
                 System.out.println(dataCaducitats);
+                //En caso que se deja algun campo sin completar
+                if (noms.isEmpty() || cognoms.isEmpty() || usuaris.isEmpty() || passwds.isEmpty() || correos.isEmpty() || cvvs.isEmpty() || ntarjetas.isEmpty() || dataCaducitats.isEmpty()) {
+                    Toast.makeText(registrar.this, "Si us plau, completeu tots els camps", Toast.LENGTH_SHORT).show();
+                } else {
+                    Retrofit retrofit = new Retrofit.Builder()
+                            .baseUrl(URL)
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build();
+                    apiService = retrofit.create(ApiService.class);
 
+                    UsuariTrobat usuariTrobat = new UsuariTrobat(usuaris, noms, cognoms, passwds, ntarjetas, cvvs, dataCaducitats, correos);
 
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(URL)
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build();
-                apiService = retrofit.create(ApiService.class);
+                    Call<Respuesta> call = apiService.EnviarUsuario(usuariTrobat);
 
-                UsuariTrobat usuariTrobat = new UsuariTrobat(usuaris,noms,cognoms,passwds,ntarjetas,cvvs,dataCaducitats,correos);
-
-                Call<Respuesta> call = apiService.EnviarUsuario(usuariTrobat);
-
-                call.enqueue(new Callback<Respuesta>() {
-                    @Override
-                    public void onResponse(Call<Respuesta> call, Response<Respuesta> response) {
-                        if(response.isSuccessful()){
-                            Log.d("CONEXION","CONEXION SERVIDOR CONECTADO");
-                            Respuesta r = response.body();
-                            System.out.println(r.isAutoritzacio());
-                            if(r.isAutoritzacio()){
-                                Intent intent = new Intent(registrar.this,Botiga.class);
-                                intent.putExtra("user",usuaris);
-                                startActivity(intent);
+                    call.enqueue(new Callback<Respuesta>() {
+                        @Override
+                        public void onResponse(Call<Respuesta> call, Response<Respuesta> response) {
+                            if (response.isSuccessful()) {
+                                Log.d("CONEXION", "CONEXION SERVIDOR CONECTADO");
+                                Respuesta r = response.body();
+                                System.out.println(r.isAutoritzacio());
+                                if (r.isAutoritzacio()) {
+                                    Intent intent = new Intent(registrar.this, Botiga.class);
+                                    intent.putExtra("user", usuaris);
+                                    startActivity(intent);
+                                }
                             }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<Respuesta> call, Throwable t) {
-                        Log.e("ERROR",t.getMessage());
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<Respuesta> call, Throwable t) {
+                            Log.e("ERROR", t.getMessage());
+                        }
+                    });
+                }
             }
         });
+
 
         cancelar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(registrar.this,MainActivity.class);
+                Intent intent = new Intent(registrar.this, MainActivity.class);
                 startActivity(intent);
             }
         });

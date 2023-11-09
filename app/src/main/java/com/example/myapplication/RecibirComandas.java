@@ -27,6 +27,7 @@ public class RecibirComandas {
         this.productos = productos;
     }
 
+
     public int getId_comanda() {
         return id_comanda;
     }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Proyecto Tienda</string>
+    <string name="app_name">Pedralbes Food Company</string>
 
     <string name="Login">Login</string>
     <string name="Iniciar">Accedir</string>
@@ -45,7 +45,7 @@
     <string name="Precio">€</string>
     <string name="Cantidad">0</string>
     <string name="productes">Productes</string>
-    <string name="Carrito">Carret</string>
+    <string name="Carrito">Cistella</string>
     <string name="Compra">Comprar</string>
     <string name="Pagar">Pagar</string>
 

@@ -11,35 +11,23 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.CallAdapter;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class carrito extends AppCompatActivity implements View.OnClickListener {
     private RecyclerView recyclerViewProductos;
     private RecyclerViewAdaptadorCarito adaptadorCarito;
     private List<Productos> selectedProductos;
 
+    private double preuTotal=0.0;
 
-    private static final String URL = "http://192.168.1.35:3044/";
-    //private static final String URL = "http://pfcgrup7.dam.inspedralbes.cat:3044";
-
-
+    //private static final String URL = "http://192.168.1.35:3044/";
+    private static final String URL = "http://pfcgrup7.dam.inspedralbes.cat:3044";
     public static ApiService apiService;
-
-
     private Button comprar;
+    private TextView preu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,41 +37,71 @@ public class carrito extends AppCompatActivity implements View.OnClickListener {
         //MENU
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+
         recyclerViewProductos = (RecyclerView) findViewById(R.id.carritoRecycler);
         recyclerViewProductos.setLayoutManager(new LinearLayoutManager(carrito.this));
 
-
         selectedProductos = ProductoSelecionado.getInstance().getSelectedProductos();
-        System.out.println(selectedProductos.size());
 
-            if (selectedProductos != null && !selectedProductos.isEmpty()) {
-                adaptadorCarito = new RecyclerViewAdaptadorCarito(selectedProductos);
-                recyclerViewProductos.setAdapter(adaptadorCarito);
-                adaptadorCarito.notifyDataSetChanged(); // Notificar al RecyclerView que los datos han cambiado
-                System.out.println("CARRRRRRRITO: " + selectedProductos);
-            }
+        //Calcular precio de los productos añadidos al carrito
+        CalcularPrecio();
 
-            comprar = findViewById(R.id.comprar);
-
-            comprar.setOnClickListener(new View.OnClickListener() {
-
+        if (selectedProductos == null || selectedProductos.isEmpty()) {
+            Toast.makeText(this, "Cistella Buida", Toast.LENGTH_SHORT).show();
+        } else {
+            adaptadorCarito = new RecyclerViewAdaptadorCarito(selectedProductos);
+            recyclerViewProductos.setAdapter(adaptadorCarito);
+            adaptadorCarito.notifyDataSetChanged(); // Notificar al RecyclerView que los datos han cambiado
+            Log.d("Carrito: ","Productos en carrito"+selectedProductos);
+            //Para cuando suma o resta la cantidad
+            adaptadorCarito.AsignarCambioCantidad(new RecyclerViewAdaptadorCarito.LlamadoCambioCantidad() {
                 @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(carrito.this,finalizarcompra.class);
-                    startActivity(intent);
+                public void CambioCantidad() {
+                    preuTotal = 0.0;
+                    CalcularPrecio();
                 }
             });
+
+        }
+
+        comprar = findViewById(R.id.comprar);
+
+        comprar.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if(selectedProductos == null||selectedProductos.isEmpty()){
+                    Toast.makeText(carrito.this, "Cistella Buida", Toast.LENGTH_SHORT).show();
+                }else{
+                    Intent intent = new Intent(carrito.this, finalizarcompra.class);
+                    startActivity(intent);
+                }
+            }
+        });
     }
 
     @Override
     public void onClick(View v) {
-        Intent intent  = new Intent(this,Botiga.class);
+        Intent intent = new Intent(this, Botiga.class);
         startActivity(intent);
+    }
+
+    private void CalcularPrecio(){
+        List<Productos> ProductosSellecionados = ProductoSelecionado.getInstance().getSelectedProductos();
+
+        for(Productos productos : ProductosSellecionados){
+            int cantidad = productos.getContador();
+            double precio =  productos.getPreu();
+            double PrecioProdcuto = cantidad * precio;
+            preuTotal += PrecioProdcuto;
+        }
+        TextView precioTotal = (TextView) findViewById(R.id.precioCarrito);
+        precioTotal.setText(String.valueOf(preuTotal)+" €");
     }
 
     @Override
     public boolean onSupportNavigateUp() {
-        Intent intent =  new Intent(this,Botiga.class);
+        Intent intent = new Intent(this, Botiga.class);
         startActivity(intent);
         return true;
     }
@@ -109,10 +127,11 @@ public class carrito extends AppCompatActivity implements View.OnClickListener {
                 // Acción para la "Opción 1"
                 Intent intent2 = new Intent(this, MainActivity.class);
                 startActivity(intent2);
+                ProductoSelecionado.getInstance().clearSelectedProductos();
                 finish();
                 return true;
             case R.id.comandas:
-                Intent intent3 = new Intent(this,comandas.class);
+                Intent intent3 = new Intent(this, comandas.class);
                 startActivity(intent3);
                 return true;
         }

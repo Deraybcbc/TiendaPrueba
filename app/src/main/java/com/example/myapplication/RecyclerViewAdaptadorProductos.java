@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.Serializable;
 import java.security.AccessController;
+import java.time.Instant;
+import java.time.temporal.TemporalAdjuster;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -25,8 +27,7 @@ public class RecyclerViewAdaptadorProductos extends RecyclerView.Adapter<Recycle
     private List<Productos> productos;
 
     private OnItemClickListener onItemClickListener;
-
-
+    private Instant Glide;
 
 
     //Para cuando le demos clic
@@ -35,18 +36,18 @@ public class RecyclerViewAdaptadorProductos extends RecyclerView.Adapter<Recycle
 
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView titulo,Descripcion,precio,cantidad;
-        ImageView Imagenpro,mas,menos;
+        private TextView titulo, Descripcion, precio, cantidad;
+        ImageView Imagenpro, mas, menos;
         Button carrito;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            titulo=(TextView)itemView.findViewById(R.id.TituloC);
-            Descripcion=(TextView)itemView.findViewById(R.id.descripcionC);
-            precio=(TextView)itemView.findViewById(R.id.precio);
-            Imagenpro=(ImageView)itemView.findViewById(R.id.imagenC);
+            titulo = (TextView) itemView.findViewById(R.id.TituloC);
+            Descripcion = (TextView) itemView.findViewById(R.id.descripcionC);
+            precio = (TextView) itemView.findViewById(R.id.precio);
+            Imagenpro = (ImageView) itemView.findViewById(R.id.imagenC);
             mas = (ImageView) itemView.findViewById(R.id.mas);
             menos = (ImageView) itemView.findViewById(R.id.menos);
             cantidad = (TextView) itemView.findViewById(R.id.cantidad);
@@ -55,14 +56,14 @@ public class RecyclerViewAdaptadorProductos extends RecyclerView.Adapter<Recycle
         }
     }
 
-    public RecyclerViewAdaptadorProductos(List<Productos> productos){
+    public RecyclerViewAdaptadorProductos(List<Productos> productos) {
         this.productos = productos;
 
     }
 
     @Override
-    public ViewHolder onCreateViewHolder( ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.lista_productos,parent,false);
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.lista_productos, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
     }
@@ -75,15 +76,19 @@ public class RecyclerViewAdaptadorProductos extends RecyclerView.Adapter<Recycle
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Productos producto = productos.get(position);
-        holder.titulo.setText(producto.getNom());
-        holder.Descripcion.setText(producto.getDescripcio());
-        holder.precio.setText(String.valueOf(producto.getPreu()+" €"));
-        //Codificar la imagen
+        if (producto.isEstat()) {
+            holder.titulo.setText(producto.getNom());
+            holder.Descripcion.setText(producto.getDescripcio());
+            holder.precio.setText(String.valueOf(producto.getPreu() + " €"));
+            //Codificar la imagen
 
-        String base64String = producto.getFoto();
-        byte[] imageBytes = Base64.getDecoder().decode(base64String);
-        Bitmap decodedByte = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
-        holder.Imagenpro.setImageBitmap(decodedByte);
+            String base64String = producto.getFoto();
+            byte[] imageBytes = Base64.getDecoder().decode(base64String);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+            holder.Imagenpro.setImageBitmap(decodedByte);
+
+        }
+
 
         //Incrementar y disminuir la cantidad
         holder.mas.setOnClickListener(new View.OnClickListener() {
@@ -116,25 +121,42 @@ public class RecyclerViewAdaptadorProductos extends RecyclerView.Adapter<Recycle
             @Override
             public void onClick(View v) {
 
-                List<Productos> productosEnCarrito = new ArrayList<>();
+                int cantidad = producto.getContador();
 
-                //Añadir producto selecionado
-                for (Productos producto : productos) {
-                    if (producto.getContador() > 0) {
-                        productosEnCarrito.add(producto);
-                        System.out.println(productosEnCarrito);
+                if (cantidad >= 0) {
+                    List<Productos> productosCarrito = ProductoSelecionado.getInstance().getSelectedProductos();
+                    boolean existeEnCarrito = false;
+
+                    //Añadir producto selecionado
+                    for (Productos productosencarrito : productosCarrito) {
+                        if (producto.getId_producte() == productosencarrito.getId_producte()) {
+                            // Si el producto ya está en el carrito, aumenta la cantidad
+                            int nuevaCantidad = productosencarrito.getContador() + producto.getContador();
+                            productosencarrito.setContador(nuevaCantidad);
+                            existeEnCarrito = true;
+                        }
                     }
+
+                    if (!existeEnCarrito) {
+                        // Si el producto no existe en el carrito, añádelo
+                        ProductoSelecionado.getInstance().addSelectedProductos(producto);
+                        Toast.makeText(v.getContext(), "Producte afegit", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(v.getContext(), "Quantitat del producte a la cistella actualitzada", Toast.LENGTH_SHORT).show();
+                    }
+
+                    if (onItemClickListener != null) {
+                        onItemClickListener.onItemClick(productosCarrito);
+                    }
+                    // Abre la nueva actividad aquí
+                    /*
+                    Intent intent = new Intent(v.getContext(), carrito.class);
+                    v.getContext().startActivity(intent);*/
+
+                } else {
+                    Toast.makeText(v.getContext(), "La quantitat ha de ser més gran o igual a zero", Toast.LENGTH_SHORT).show();
                 }
 
-                //Añadir producto seleccionado a la clase productoSelecionado
-                if (!productosEnCarrito.isEmpty()) {
-                    ProductoSelecionado.getInstance().addSelectedProductos(producto);
-                    Toast.makeText(v.getContext(), "Productos añadidos", Toast.LENGTH_SHORT).show();
-                }
-
-                if (onItemClickListener != null) {
-                    onItemClickListener.onItemClick(productosEnCarrito);
-                }
             }
         });
 

@@ -40,8 +40,8 @@ public class Productos implements Serializable {
         this.nom = nom;
     }
 
-    public Productos(int id_producte, int contador) {
-        this.id_producte = id_producte;
+    public Productos(String nom, int contador) {
+        this.nom = nom;
         this.contador = contador;
     }
 

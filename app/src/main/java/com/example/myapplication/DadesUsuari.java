@@ -32,8 +32,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DadesUsuari extends AppCompatActivity {
 
-    private static final String URL = "http://192.168.1.35:3044/";
-    //private static final String URL = "http://pfcgrup7.dam.inspedralbes.cat:3044";
+    //private static final String URL = "http://192.168.1.35:3044/";
+    private static final String URL = "http://pfcgrup7.dam.inspedralbes.cat:3044";
     public ApiService apiService;
     private AppBarConfiguration appBarConfiguration;
     private ActivityBotigaBinding binding;
@@ -90,6 +90,8 @@ public class DadesUsuari extends AppCompatActivity {
                             infocorreu.setText(infousers.get(i).getCorreu());
 
                             EditText infocontraD = (EditText) findViewById(R.id.infocontrasD);
+                            infocontraD.setText(infousers.get(i).getPasswd());
+
                             vercontra.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -113,13 +115,13 @@ public class DadesUsuari extends AppCompatActivity {
                             infoNumTargeta.setText(infousers.get(i).getnTargeta());
 
                             EditText infoCVV = (EditText) findViewById(R.id.infoCVVS);
+                            infoCVV.setText(infousers.get(i).getCVV());
 
                             verCVV.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     if(visibleCVV){
                                         for (int i = 0 ; i < infousers.size();i++) {
-
                                             infoCVV.setInputType(129);
                                             visibleCVV = false;
                                             infoCVV.setText(infousers.get(i).getCVV());
@@ -127,7 +129,6 @@ public class DadesUsuari extends AppCompatActivity {
                                     }else{
                                         //sino es 128 puede ser 144
                                         for (int i = 0 ; i < infousers.size();i++) {
-
                                             infoCVV.setInputType(128);
                                             visibleCVV = true;
                                             infoCVV.setText(infousers.get(i).getCVV());
@@ -138,23 +139,6 @@ public class DadesUsuari extends AppCompatActivity {
 
                             EditText infofecha = (EditText) findViewById(R.id.infofechas);
                             infofecha.setText(infousers.get(i).getDataCaducitat());
-/*
-                            infonom = infousers.get(i).getNom();
-                            infocognom = infousers.get(i).getCognoms();
-                            infocorreo = infousers.get(i).getCorreu();
-                            infousuario = infousers.get(i).getUsuario();
-                            infocontr = infousers.get(i).getPasswd();
-                            infonT = infousers.get(i).getnTargeta();
-                            infodata = infousers.get(i).getDataCaducitat();
-                            infocvv = infousers.get(i).getCVV();
-                            Log.d("NOM: ",infonom);
-                            Log.d("infocognom: ",infocognom);
-                            Log.d("infocorreo: ",infocorreo);
-                            Log.d("infousuario: ",infousuario);
-                            Log.d("infocontr: ",infocontr);
-                            Log.d("infonT: ",infonT);
-                            Log.d("infodata: ",infodata);
-                            Log.d("infocvv: ",infocvv);*/
 
                         }
                     }
@@ -173,12 +157,6 @@ public class DadesUsuari extends AppCompatActivity {
             }
         });
 
-
-
-
-
-
-
         actualizar = (ImageButton) findViewById(R.id.actualizzar);
         actualizar.setOnClickListener(new View.OnClickListener() {
 
@@ -194,8 +172,6 @@ public class DadesUsuari extends AppCompatActivity {
                 EditText infoNumTargeta = (EditText) findViewById(R.id.infoNumTargetas);
                 EditText infoCVV = (EditText) findViewById(R.id.infoCVVS);
                 EditText infofecha = (EditText) findViewById(R.id.infofechas);
-
-
 
                 String infonom = infon.getText().toString();
                 String infocognom = infoc.getText().toString();
@@ -222,7 +198,7 @@ public class DadesUsuari extends AppCompatActivity {
                         if(response.isSuccessful()){
                             Log.d("CONEXION","SERVIDOR CONECTADO");
                             Toast.makeText(DadesUsuari.this, "Usuario Modificado", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(DadesUsuari.this,MainActivity.class);
+                            Intent intent = new Intent(DadesUsuari.this,Botiga.class);
                             startActivity(intent);
                         }
                     }
@@ -265,6 +241,7 @@ public class DadesUsuari extends AppCompatActivity {
                 // Acción para la "Opción 1"
                 Intent intent2 = new Intent(this, MainActivity.class);
                 startActivity(intent2);
+                ProductoSelecionado.getInstance().clearSelectedProductos();
                 finish();
                 return true;
             case R.id.comandas:
