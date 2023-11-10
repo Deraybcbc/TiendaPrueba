@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Contrasenya = Contras.getText().toString();
 
         if(Usuario.isEmpty() || Contrasenya.isEmpty()){
-            Toast.makeText(this, "Debes rellenar todos los campos", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Has de emplenar tots els camps", Toast.LENGTH_SHORT).show();
         }
         else{
             VerificarUsuari();
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onResponse(Call<Respuesta> call, Response<Respuesta> response) {
                 if(response.isSuccessful()){
-                    Log.d("Conexion","CONEXION SERVIDOR ESTABLECIDA");
+                    Log.d("Conexion","CONEXIO AMB SERVIDOR ESTABLERTA");
 
                     Respuesta r = response.body();
 
@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         startActivity(intent);
                     }else{
                         Log.e("USER","NO ESTA");
-                        Toast.makeText(MainActivity.this, "No esta en la base de datos", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "No es troba a la base de dades", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
